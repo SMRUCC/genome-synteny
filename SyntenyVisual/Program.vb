@@ -22,7 +22,9 @@ Module Program
         Dim model As DeviceModel = DeviceModel.Template
         Call model.GetJson.SaveTo("./test.json")
 
-        Dim res = ModelAPI.GetDrawsModel("G:\Xanthomonas_campestris_8004_uid15\xcc.json").Visualize
+        VBDebugger.Mute = True
+
+        Dim res = ModelAPI.GetDrawsModel("G:\Xanthomonas_campestris_8004_uid15\xcc.json", LineStyles.Polyline).Visualize
         Call res.Save("G:\Xanthomonas_campestris_8004_uid15\Xanthomonadales.png")
     End Sub
 End Module

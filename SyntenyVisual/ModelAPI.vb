@@ -13,7 +13,7 @@ Imports Microsoft.VisualBasic.Imaging
 
 Public Module ModelAPI
 
-    Public Function GetDrawsModel(path As String) As DrawingModel
+    Public Function GetDrawsModel(path As String, Optional style As LineStyles = LineStyles.Polyline) As DrawingModel
         Dim model As DeviceModel = Serialization.LoadJsonFile(Of DeviceModel)(path)
         Dim DIR As New Directory(path.ParentPath)
         Dim bbhMeta As Analysis.BestHit =
@@ -62,7 +62,8 @@ Public Module ModelAPI
                 h1,
                 h2,
                 width,
-                model.Margin.Width)
+                model.Margin.Width,
+                style)
             genomes += New GenomeBrief With {
                 .Name = query.Title,
                 .Size = query.Size,
@@ -83,7 +84,8 @@ Public Module ModelAPI
             .Links = links,
             .size = model.Size,
             .penWidth = model.penWidth,
-            .briefs = genomes
+            .briefs = genomes,
+            .margin = model.Margin
         }
     End Function
 

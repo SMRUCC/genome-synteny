@@ -4,6 +4,7 @@ Imports Microsoft.VisualBasic.Serialization
 
 Public Class DrawingModel
 
+    Public Property margin As Size
     Public Property Links As Line()
     Public Property size As Size
     Public Property penWidth As Integer
@@ -23,6 +24,7 @@ Public Class DrawingModel
 
             For Each x As GenomeBrief In briefs
                 Call gdi.DrawString(x.Name, font, cl, New Point(size.Width, x.Y - dh))
+                Call gdi.DrawLine(New Pen(Color.Black, 10), New Point(margin.Width, x.Y), New Point(size.Width - margin.Width, x.Y))
             Next
 
             Return gdi.ImageResource
