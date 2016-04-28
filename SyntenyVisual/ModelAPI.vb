@@ -4,6 +4,11 @@ Imports LANS.SystemsBiology.Assembly.NCBI.GenBank.TabularFormat
 Imports LANS.SystemsBiology.NCBI.Extensions
 Imports LANS.SystemsBiology.NCBI.Extensions.Analysis
 Imports LANS.SystemsBiology.NCBI.Extensions.LocalBLAST.Application.BBH
+Imports Microsoft.VisualBasic.Language
+Imports Microsoft.VisualBasic.ComponentModel.DataStructures
+Imports Microsoft.VisualBasic
+Imports Microsoft.VisualBasic.Linq
+Imports System.Drawing
 
 Public Module ModelAPI
 
@@ -20,6 +25,44 @@ Public Module ModelAPI
 
         height /= PTT.Count
 
+        Dim maps As SlideWindowHandle(Of String)() = model.Orders.CreateSlideWindows(2)
+        Dim bbhs As BBHIndex() =
+            LinqAPI.Exec(Of BBHIndex) <= From hits As HitCollection
+                                         In bbhMeta.hits
+                                         Select From tag As SlideWindowHandle(Of String)
+                                                In maps
+                                                Let o As BBHIndex = IsOrtholog(tag.Elements.First, tag.Elements.Last, hits, bbhMeta.sp)
+                                                Where Not o Is Nothing
+                                                Select o
+        Dim spGroups = (From x As BBHIndex
+                        In bbhs
+                        Let sp As String = x.Properties("query")
+                        Select sp,
+                            x
+                        Group By sp Into Group)
+        Dim h1 As Integer = model.Margin.Height
+        Dim h2 As Integer = h1 + height
+        Dim links As New List(Of Line)
+        Dim i As Integer
+
+        For Each buf In spGroups
+            Dim sp As String = buf.sp
+            Dim hit As String = maps(i.MoveNext).Elements.Last
+            links += OrthologAPI.FromBBH(
+                buf.Group.ToArray(Function(x) x.x),
+                PTT(sp),
+                PTT(hit),
+                Function() Color.Red,
+                h1,
+                h2,
+                width)
+            h1 += height
+            h2 += height
+        Next
+
+        Return New DrawingModel With {
+            .Links = links
+        }
     End Function
 
     ''' <summary>
@@ -39,7 +82,10 @@ Public Module ModelAPI
         Else
             Return New BBHIndex With {
                 .QueryName = query,
-                .HitName = hit
+                .HitName = hit,
+                .Properties = New Dictionary(Of String, String) From {
+                    {NameOf(query), query}
+                }
             }
         End If
     End Function

@@ -45,18 +45,12 @@ End Class
 ''' 
 ''' </summary>
 ''' <remarks>
-'''    +
-'''    |
+''' ---+-------
 '''    |
 '''    \
 '''     \
-'''      \
-'''       \
-'''        \
-'''         \
-'''         |
-'''         |
-'''         +
+'''      |
+''' -----+-----
 ''' </remarks>
 Public Class Polyline : Inherits Line
 
