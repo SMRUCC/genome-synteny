@@ -1,5 +1,6 @@
 ﻿Imports System.Drawing
 Imports Microsoft.VisualBasic.Imaging
+Imports Microsoft.VisualBasic.Serialization
 
 Module Program
 
@@ -16,5 +17,9 @@ Module Program
         Call bez.Draw(gdi, 5)
 
         Call gdi.Save("./testPol.png", ImageFormats.Png)
+
+
+        Dim model As DeviceModel = DeviceModel.Template
+        Call model.GetJson.SaveTo("./test.json")
     End Sub
 End Module
