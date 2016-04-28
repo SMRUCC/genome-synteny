@@ -70,6 +70,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LinkLines.vb" />
     <Compile Include="Ortholog.vb" />
     <Compile Include="Device.vb" />
     <Compile Include="Program.vb" />
@@ -113,6 +114,14 @@
     <ProjectReference Include="..\..\..\..\..\GCModeller.Core\Bio.Assembly\Bio.Assembly.vbproj">
       <Project>{c699d311-9923-4c19-bf70-5048d0e2cf5d}</Project>
       <Name>Bio.Assembly</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\localblast\LocalBLAST\LANS.SystemsBiology.NCBI.Extensions.vbproj">
+      <Project>{c6b843b8-f990-4faf-98de-a20efc8b69f7}</Project>
+      <Name>LANS.SystemsBiology.NCBI.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\VisualBasic_AppFramework\DocumentFormats\DocumentFormat.Csv\DocumentFormat.Csv.vbproj">
+      <Project>{1d8910c2-ada2-4306-96dc-a61b494522ed}</Project>
+      <Name>DocumentFormat.Csv</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\VisualBasic_AppFramework\Microsoft.VisualBasic.Architecture.Framework\+Microsoft.VisualBasic.Architecture.Framework.vbproj">
       <Project>{fecce1fd-e1d4-49e3-a668-60bb5e7aed99}</Project>

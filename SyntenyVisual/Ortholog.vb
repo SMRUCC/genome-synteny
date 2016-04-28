@@ -1,146 +1,69 @@
 ﻿Imports System.Drawing
+Imports LANS.SystemsBiology.Assembly.NCBI.GenBank.TabularFormat
+Imports LANS.SystemsBiology.Assembly.NCBI.GenBank.TabularFormat.ComponentModels
+Imports LANS.SystemsBiology.NCBI.Extensions.LocalBLAST.Application.BBH
 Imports Microsoft.VisualBasic.Imaging
-Imports Microsoft.VisualBasic.Serialization
-
-''' <summary>
-''' 直系同源的绘图模型
-''' </summary>
-Public MustInherit Class Line
-
-    Public ReadOnly Property From As Point
-    Public ReadOnly Property [To] As Point
-    Public ReadOnly Property Color As Color
-
-    Sub New(from As Point, toPoint As Point, cl As Color)
-        Me.From = from
-        Me.To = toPoint
-        Me.Color = cl
-    End Sub
-
-    Public MustOverride Sub Draw(ByRef gdi As GDIPlusDeviceHandle, width As Integer)
-
-    Public Overrides Function ToString() As String
-        Return Me.GetJson
-    End Function
-End Class
-
-''' <summary>
-''' 
-''' </summary>
-''' <remarks>
-''' 这个绘图模型最简单
-''' </remarks>
-Public Class StraightLine : Inherits Line
-
-    Sub New(from As Point, toPoint As Point, cl As Color)
-        Call MyBase.New(from, toPoint, cl)
-    End Sub
-
-    Public Overrides Sub Draw(ByRef gdi As GDIPlusDeviceHandle, width As Integer)
-        Call gdi.DrawLine(New Pen(Color, width), From, [To])
-    End Sub
-End Class
-
-''' <summary>
-''' 
-''' </summary>
-''' <remarks>
-'''    +
-'''    |
-'''    |
-'''    \
-'''     \
-'''      \
-'''       \
-'''        \
-'''         \
-'''         |
-'''         |
-'''         +
-''' </remarks>
-Public Class Polyline : Inherits Line
-
-    ''' <summary>
-    ''' 出现转折的长度的百分比
-    ''' </summary>
-    ''' <returns></returns>
-    Public ReadOnly Property Turnp As Double
-
-    ''' <summary>
-    ''' 在高度的多少百分比处开始转折？
-    ''' </summary>
-    ''' <param name="p"></param>
-    Sub New(from As Point, toPoint As Point, cl As Color, Optional p As Double = 0.2)
-        Call MyBase.New(from, toPoint, cl)
-        Turnp = p
-    End Sub
-
-    Public Overrides Sub Draw(ByRef gdi As GDIPlusDeviceHandle, width As Integer)
-        Dim height As Integer = [To].Y - From.Y
-        Dim t As Integer = height * Turnp
-        Dim t1 As New Point(From.X, From.Y + t)
-        Dim t2 As New Point([To].X, [To].Y - t)
-        Dim pen As New Pen(Color, width)
-
-        ' 绘图是从上到下进行的
-        Call gdi.DrawLine(pen, From, t1)
-        Call gdi.DrawLine(pen, t1, t2)
-        Call gdi.DrawLine(pen, t2, [To])
-    End Sub
-End Class
-
-Public Class Bézier : Inherits Line
-
-    ''' <summary>
-    ''' 出现转折的长度的百分比
-    ''' </summary>
-    ''' <returns></returns>
-    Public ReadOnly Property Turnp As Double
-
-    ''' <summary>
-    ''' 在高度的多少百分比处开始转折？
-    ''' </summary>
-    ''' <param name="p"></param>
-    Sub New(from As Point, toPoint As Point, cl As Color, Optional p As Double = 0.2)
-        Call MyBase.New(from, toPoint, cl)
-        Turnp = p
-    End Sub
-
-    Public Overrides Sub Draw(ByRef gdi As GDIPlusDeviceHandle, width As Integer)
-        Dim height As Integer = [To].Y - From.Y       ' 由于假设To是下一个基因组，所以To的Y肯定会比From的Y的值要大
-        Dim w As Integer = Math.Abs(From.X - [To].X)  ' 但是水平的基因组上面的位置却不会一定是To.X要比From.X要大了
-        Dim ty As Integer = 2 * (height * Turnp)
-        Dim tx As Integer = 0.65 * (w * Turnp)
-        Dim order As Integer = If([To].X <= From.X, 1, -1) ' 正常的顺序
-        Dim t1 As New Point(From.X + order * tx, From.Y + ty)  ' 控制点 1
-        Dim t2 As New Point([To].X - order * tx, [To].Y - ty)  ' 控制点 2
-        Dim pen As New Pen(Color, width)
-
-        Call gdi.DrawBézier(pen, From, t1, t2, [To])
-    End Sub
-End Class
-
-''' <summary>
-''' 两个同源的基因之间的相连的线的样式
-''' </summary>
-Public Enum LineStyle
-    ''' <summary>
-    ''' 直线
-    ''' </summary>
-    Straight
-    ''' <summary>
-    ''' 折线
-    ''' </summary>
-    Polyline
-    ''' <summary>
-    ''' 贝塞尔曲线
-    ''' </summary>
-    Bézier
-End Enum
+Imports Microsoft.VisualBasic
 
 ''' <summary>
 ''' 直系同源的绘图数据模型
 ''' </summary>
-Public Class Ortholog
+Public Module Ortholog
 
-End Class
+    Delegate Function __getLine(pt1 As Point, pt2 As Point, color As Color) As Line
+
+    ReadOnly __createLines As New Dictionary(Of LineStyles, __getLine) From {
+        {LineStyles.Polyline, AddressOf GetPolyline},
+        {LineStyles.Bézier, AddressOf GetBézier},
+        {LineStyles.Straight, AddressOf GetLine}
+    }
+
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <param name="source"></param>
+    ''' <param name="query"></param>
+    ''' <param name="hit"></param>
+    ''' <param name="colors"></param>
+    ''' <param name="h1"></param>
+    ''' <param name="h2"></param>
+    ''' <param name="style"></param>
+    ''' <param name="width">绘图区域的宽度</param>
+    ''' <returns></returns>
+    Public Function FromBBH(source As IEnumerable(Of BBHIndex),
+                            query As PTT,
+                            hit As PTT,
+                            colors As Func(Of GeneBrief, GeneBrief, Color),
+                            h1 As Integer,
+                            h2 As Integer,
+                            width As Integer,
+                            Optional style As LineStyles = LineStyles.Polyline) As Line()
+
+        Dim createLine As __getLine = __createLines(style)
+        Dim l1 As Integer = query.Size
+        Dim l2 As Integer = hit.Size
+        Dim result As New List(Of Line)
+
+        For Each x As BBHIndex In source
+            Dim gq As GeneBrief = query(x.QueryName)
+            Dim gh As GeneBrief = hit(x.HitName)
+            Dim cl As Color = colors(gq, gh)
+
+            result += createLine(New Point(width * gq.ATG / l1, h1), New Point(width * gh.ATG / l2, h2), cl)
+        Next
+
+        Return result
+    End Function
+
+    Private Function GetLine(pt1 As Point, pt2 As Point, color As Color) As Line
+        Return New StraightLine(pt1, pt2, color)
+    End Function
+
+    Private Function GetPolyline(pt1 As Point, pt2 As Point, color As Color) As Line
+        Return New Polyline(pt1, pt2, color)
+    End Function
+
+    Private Function GetBézier(pt1 As Point, pt2 As Point, color As Color) As Line
+        Return New Bézier(pt1, pt2, color)
+    End Function
+End Module
