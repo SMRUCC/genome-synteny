@@ -48,10 +48,13 @@ Public Module ModelAPI
         For Each buf In spGroups
             Dim sp As String = buf.sp
             Dim hit As String = maps(i.MoveNext).Elements.Last
+            Dim query As PTT = PTT(sp)
+            Dim hitBrief As PTT = PTT(hit)
+
             links += OrthologAPI.FromBBH(
                 buf.Group.ToArray(Function(x) x.x),
-                PTT(sp),
-                PTT(hit),
+                query,
+                hitBrief,
                 Function() Color.Red,
                 h1,
                 h2,
@@ -74,6 +77,8 @@ Public Module ModelAPI
     ''' <param name="hitsTag">基因组标识符</param>
     ''' <returns></returns>
     Public Function IsOrtholog(query As String, hit As String, hits As HitCollection, hitsTag As String) As BBHIndex
+        Dim qsp As String = query
+
         query = hits.__getName(hitsTag, query)
         hit = hits.__getName(hitsTag, hit)
 
@@ -84,7 +89,7 @@ Public Module ModelAPI
                 .QueryName = query,
                 .HitName = hit,
                 .Properties = New Dictionary(Of String, String) From {
-                    {NameOf(query), query}
+                    {NameOf(query), qsp}
                 }
             }
         End If
@@ -118,4 +123,7 @@ Public Class DrawingModel
 
     Public Property Links As Line()
 
+    Public Function Visualize() As Image
+
+    End Function
 End Class

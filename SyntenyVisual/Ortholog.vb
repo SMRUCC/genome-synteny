@@ -49,7 +49,14 @@ Public Module OrthologAPI
             Dim gh As GeneBrief = hit(x.HitName)
             Dim cl As Color = colors(gq, gh)
 
-            result += createLine(New Point(width * gq.ATG / l1, h1), New Point(width * gh.ATG / l2, h2), cl)
+            If gq Is Nothing OrElse gh Is Nothing Then
+                Call VBDebugger.Warning($"{x.QueryName} --> {x.HitName} unable found brief info!")
+            Else
+                Dim from As New Point(width * gq.ATG / l1, h1)
+                Dim topt As New Point(width * gh.ATG / l2, h2)
+
+                result += createLine(from, topt, cl)
+            End If
         Next
 
         Return result
