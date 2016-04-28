@@ -44,7 +44,9 @@ Public Module ModelAPI
         Dim h1 As Integer = model.Margin.Height
         Dim h2 As Integer = h1 + height
         Dim links As New List(Of Line)
+        Dim genomes As New List(Of GenomeBrief)
         Dim i As Integer
+        Dim last As PTT = Nothing
 
         For Each buf In spGroups
             Dim sp As String = buf.sp
@@ -61,14 +63,27 @@ Public Module ModelAPI
                 h2,
                 width,
                 model.Margin.Width)
+            genomes += New GenomeBrief With {
+                .Name = query.Title,
+                .Size = query.Size,
+                .Y = h1
+            }
             h1 += height
             h2 += height
+            last = hitBrief
         Next
+
+        genomes += New GenomeBrief With {
+            .Name = last.Title,
+            .Size = last.Size,
+            .Y = h1
+        }
 
         Return New DrawingModel With {
             .Links = links,
             .size = model.Size,
-            .penWidth = model.penWidth
+            .penWidth = model.penWidth,
+            .briefs = genomes
         }
     End Function
 
