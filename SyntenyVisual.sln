@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "runtime", "runtime", "{767E
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LANS.SystemsBiology.NCBI.Extensions", "..\..\..\..\localblast\LocalBLAST\LANS.SystemsBiology.NCBI.Extensions.vbproj", "{C6B843B8-F990-4FAF-98DE-A20EFC8B69F7}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "GCModeller.DataVisualization", "GCModeller.DataVisualization\GCModeller.DataVisualization.vbproj", "{C7C6BB3D-210C-4F6F-96AE-E499A2875771}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,18 @@ Global
 		{C6B843B8-F990-4FAF-98DE-A20EFC8B69F7}.Release|x64.Build.0 = Release|x64
 		{C6B843B8-F990-4FAF-98DE-A20EFC8B69F7}.Release|x86.ActiveCfg = Release|Any CPU
 		{C6B843B8-F990-4FAF-98DE-A20EFC8B69F7}.Release|x86.Build.0 = Release|Any CPU
+		{C7C6BB3D-210C-4F6F-96AE-E499A2875771}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7C6BB3D-210C-4F6F-96AE-E499A2875771}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7C6BB3D-210C-4F6F-96AE-E499A2875771}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C7C6BB3D-210C-4F6F-96AE-E499A2875771}.Debug|x64.Build.0 = Debug|Any CPU
+		{C7C6BB3D-210C-4F6F-96AE-E499A2875771}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C7C6BB3D-210C-4F6F-96AE-E499A2875771}.Debug|x86.Build.0 = Debug|Any CPU
+		{C7C6BB3D-210C-4F6F-96AE-E499A2875771}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7C6BB3D-210C-4F6F-96AE-E499A2875771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7C6BB3D-210C-4F6F-96AE-E499A2875771}.Release|x64.ActiveCfg = Release|Any CPU
+		{C7C6BB3D-210C-4F6F-96AE-E499A2875771}.Release|x64.Build.0 = Release|Any CPU
+		{C7C6BB3D-210C-4F6F-96AE-E499A2875771}.Release|x86.ActiveCfg = Release|Any CPU
+		{C7C6BB3D-210C-4F6F-96AE-E499A2875771}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
