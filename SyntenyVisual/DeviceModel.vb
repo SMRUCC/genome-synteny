@@ -3,6 +3,7 @@ Imports Microsoft.VisualBasic.Language
 
 Public Class DeviceModel : Inherits ClassObject
 
+    Public Property Margin As Size
     Public Property Size As Size
     Public Property Meta As String
 
@@ -11,6 +12,7 @@ Public Class DeviceModel : Inherits ClassObject
     ''' </summary>
     ''' <returns></returns>
     Public Property PTT As Dictionary(Of String, String)
+    Public Property Orders As String()
 
     Public Shared Function Template() As DeviceModel
         Return New DeviceModel With {
@@ -19,7 +21,9 @@ Public Class DeviceModel : Inherits ClassObject
             .PTT = New Dictionary(Of String, String) From {
                 {"xcb", "./Xanthomonas_campestris_8004_uid15.PTT"},
                 {"xor", "./Xanthomonas_oryzae_oryzicola_BLS256_uid16740.PTT"}
-            }
+            },
+            .Margin = New Size(25, 25),
+            .Orders = {"xcb", "xor"}
         }
     End Function
 End Class

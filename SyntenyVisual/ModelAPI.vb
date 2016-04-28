@@ -11,6 +11,10 @@ Public Module ModelAPI
         Dim PTT As Dictionary(Of String, PTT) =
             model.PTT.ToDictionary(Function(x) x.Key,
                                    Function(x) TabularFormat.PTT.Load(x.Value))
+        Dim height As Integer = model.Size.Height - model.Margin.Height * 2
+        Dim width As Integer = model.Size.Width - model.Margin.Width * 2
+
+        height /= PTT.Count
 
     End Function
 End Module

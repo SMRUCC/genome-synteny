@@ -1,6 +1,11 @@
 {  
   "Extension": null,
+  "Margin": {
+    "height": 25,
+    "width": 25
+  },
   "Meta": ".\/bbh.Xml",
+  "Orders": [ "xcb", "xor" ],
   "PTT": [
     {
       "Key": "xcb",
