@@ -58,7 +58,7 @@ Public Module ModelAPI
                 buf.Group.ToArray(Function(x) x.x),
                 query,
                 hitBrief,
-                Function() Color.Red,
+                Function() Color.LightSkyBlue,
                 h1,
                 h2,
                 width,
