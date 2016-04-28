@@ -4,6 +4,8 @@ genome synteny visualization tools for the bacterial genomes based on the local-
 ![](https://raw.githubusercontent.com/SMRUCC/genome-synteny/master/bezier-curve-in-html5.jpg)
 
 
-The test multiple genome synteny visualization output:
+The test multiple genome synteny visualization output for Xanthomonadales species:
 
-![](https://raw.githubusercontent.com/SMRUCC/genome-synteny/master/test_out.png)
+![](https://raw.githubusercontent.com/SMRUCC/genome-synteny/master/data/Xanthomonadales.B%C3%A9zier.png)
+![](https://raw.githubusercontent.com/SMRUCC/genome-synteny/master/data/Xanthomonadales.Polyline.png)
+![](https://raw.githubusercontent.com/SMRUCC/genome-synteny/master/data/Xanthomonadales.Straight.png)
