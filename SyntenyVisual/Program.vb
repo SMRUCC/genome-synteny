@@ -22,7 +22,7 @@ Module Program
         Dim model As DeviceModel = DeviceModel.Template
         Call model.GetJson.SaveTo("./test.json")
 
-
-        Call ModelAPI.GetDrawsModel("F:\GCModeller\GCI Project\DataVisualization\genome-synteny\data\xcc.json").Visualize.SaveAs("G:\Xanthomonas_campestris_8004_uid15\Xanthomonadales.png", ImageFormats.Png)
+        Dim res = ModelAPI.GetDrawsModel("F:\GCModeller\GCI Project\DataVisualization\genome-synteny\data\xcc.json").Visualize
+        Call res.Save("G:\Xanthomonas_campestris_8004_uid15\Xanthomonadales.png")
     End Sub
 End Module

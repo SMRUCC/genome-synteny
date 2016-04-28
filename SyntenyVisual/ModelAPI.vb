@@ -9,6 +9,7 @@ Imports Microsoft.VisualBasic.ComponentModel.DataStructures
 Imports Microsoft.VisualBasic
 Imports Microsoft.VisualBasic.Linq
 Imports System.Drawing
+Imports Microsoft.VisualBasic.Imaging
 
 Public Module ModelAPI
 
@@ -64,7 +65,9 @@ Public Module ModelAPI
         Next
 
         Return New DrawingModel With {
-            .Links = links
+            .Links = links,
+            .size = model.Size,
+            .penWidth = model.penWidth
         }
     End Function
 
@@ -122,8 +125,16 @@ End Module
 Public Class DrawingModel
 
     Public Property Links As Line()
+    Public Property size As Size
+    Public Property penWidth As Integer
 
     Public Function Visualize() As Image
+        Using gdi As GDIPlusDeviceHandle = size.CreateGDIDevice
+            For Each lnk In Links
+                Call lnk.Draw(gdi, penWidth)
+            Next
 
+            Return gdi.ImageResource
+        End Using
     End Function
 End Class

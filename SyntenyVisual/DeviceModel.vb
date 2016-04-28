@@ -6,6 +6,7 @@ Public Class DeviceModel : Inherits ClassObject
     Public Property Margin As Size
     Public Property Size As Size
     Public Property Meta As String
+    Public Property penWidth As Integer
 
     ''' <summary>
     ''' {基因组的名称, PTT的文件路径}
@@ -23,7 +24,8 @@ Public Class DeviceModel : Inherits ClassObject
                 {"xor", "./Xanthomonas_oryzae_oryzicola_BLS256_uid16740.PTT"}
             },
             .Margin = New Size(25, 25),
-            .Orders = {"xcb", "xor"}
+            .Orders = {"xcb", "xor"},
+            .penWidth = 3
         }
     End Function
 End Class
