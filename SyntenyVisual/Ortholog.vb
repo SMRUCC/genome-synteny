@@ -8,7 +8,7 @@ Imports Microsoft.VisualBasic
 ''' <summary>
 ''' 直系同源的绘图数据模型
 ''' </summary>
-Public Module Ortholog
+Public Module OrthologAPI
 
     Delegate Function __getLine(pt1 As Point, pt2 As Point, color As Color) As Line
 
