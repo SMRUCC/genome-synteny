@@ -37,6 +37,7 @@ Public Module OrthologAPI
                             h1 As Integer,
                             h2 As Integer,
                             width As Integer,
+                            margin As Integer,
                             Optional style As LineStyles = LineStyles.Polyline) As Line()
 
         Dim createLine As __getLine = __createLines(style)
@@ -52,8 +53,8 @@ Public Module OrthologAPI
             If gq Is Nothing OrElse gh Is Nothing Then
                 Call VBDebugger.Warning($"{x.QueryName} --> {x.HitName} unable found brief info!")
             Else
-                Dim from As New Point(width * gq.ATG / l1, h1)
-                Dim topt As New Point(width * gh.ATG / l2, h2)
+                Dim from As New Point(width * gq.ATG / l1 + margin, h1)
+                Dim topt As New Point(width * gh.ATG / l2 + margin, h2)
 
                 result += createLine(from, topt, cl)
             End If

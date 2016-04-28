@@ -59,7 +59,8 @@ Public Module ModelAPI
                 Function() Color.Red,
                 h1,
                 h2,
-                width)
+                width,
+                model.Margin.Width)
             h1 += height
             h2 += height
         Next
@@ -121,20 +122,3 @@ Public Module ModelAPI
         End If
     End Function
 End Module
-
-Public Class DrawingModel
-
-    Public Property Links As Line()
-    Public Property size As Size
-    Public Property penWidth As Integer
-
-    Public Function Visualize() As Image
-        Using gdi As GDIPlusDeviceHandle = size.CreateGDIDevice
-            For Each lnk In Links
-                Call lnk.Draw(gdi, penWidth)
-            Next
-
-            Return gdi.ImageResource
-        End Using
-    End Function
-End Class
