@@ -13,6 +13,12 @@ Imports Microsoft.VisualBasic.Imaging
 
 Public Module ModelAPI
 
+    ''' <summary>
+    ''' Convert data model <see cref="DeviceModel"/> to drawing object model <see cref="DrawingModel"/>
+    ''' </summary>
+    ''' <param name="path">The json file path of the drawing data model <see cref="DeviceModel"/></param>
+    ''' <param name="style">The link line style</param>
+    ''' <returns></returns>
     Public Function GetDrawsModel(path As String, Optional style As LineStyles = LineStyles.Polyline) As DrawingModel
         Dim model As DeviceModel = Serialization.LoadJsonFile(Of DeviceModel)(path)
         Dim DIR As New Directory(path.ParentPath)

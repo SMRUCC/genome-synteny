@@ -19,12 +19,12 @@ Public Module OrthologAPI
     }
 
     ''' <summary>
-    ''' 
+    ''' Creates the drawing model from the bbh result.
     ''' </summary>
-    ''' <param name="source"></param>
-    ''' <param name="query"></param>
-    ''' <param name="hit"></param>
-    ''' <param name="colors"></param>
+    ''' <param name="source">bbh ortholog analysis result</param>
+    ''' <param name="query">The genomics context of the query</param>
+    ''' <param name="hit">The genomics context of the hit</param>
+    ''' <param name="colors">Color profiles, this can be family, COGS, pathways or others</param>
     ''' <param name="h1"></param>
     ''' <param name="h2"></param>
     ''' <param name="style"></param>

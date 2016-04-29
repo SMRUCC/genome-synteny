@@ -18,13 +18,13 @@ Public Class DrawingModel
         Dim dh As Integer = GDIPlusExtensions.MeasureString(briefs.First.Name, font).Height / 2
 
         Using gdi As GDIPlusDeviceHandle = New Size(size.Width + maxtLen * 1.5, size.Height).CreateGDIDevice
-            For Each lnk As Line In Links
+            For Each lnk As Line In Links   ' 首先绘制连线
                 Call lnk.Draw(gdi, penWidth)
             Next
 
-            For Each x As GenomeBrief In briefs
+            For Each x As GenomeBrief In briefs   '然后绘制基因组的简单表示，以及显示标题
                 Call gdi.DrawString(x.Name, font, cl, New Point(size.Width, x.Y - dh))
-                Call gdi.DrawLine(New Pen(Color.Black, 10), New Point(margin.Width, x.Y), New Point(size.Width - margin.Width, x.Y))
+                Call gdi.DrawLine(New Pen(Color.Gray, 10), New Point(margin.Width, x.Y), New Point(size.Width - margin.Width, x.Y))
             Next
 
             Return gdi.ImageResource
@@ -32,10 +32,21 @@ Public Class DrawingModel
     End Function
 End Class
 
+''' <summary>
+''' The simple abstract of the genome drawing data.
+''' </summary>
 Public Class GenomeBrief
 
     Public Property Y As Integer
+    ''' <summary>
+    ''' The display title
+    ''' </summary>
+    ''' <returns></returns>
     Public Property Name As String
+    ''' <summary>
+    ''' The length of the genome nt sequence
+    ''' </summary>
+    ''' <returns></returns>
     Public Property Size As String
 
     Public Overrides Function ToString() As String

@@ -3,12 +3,24 @@ Imports Microsoft.VisualBasic.Imaging
 Imports Microsoft.VisualBasic.Serialization
 
 ''' <summary>
-''' 直系同源的绘图模型
+''' The drawing model abstract of the ortholog relationship.(直系同源的绘图模型)
 ''' </summary>
 Public MustInherit Class Line
 
+    ''' <summary>
+    ''' Query
+    ''' </summary>
+    ''' <returns></returns>
     Public ReadOnly Property From As Point
+    ''' <summary>
+    ''' BBH hit
+    ''' </summary>
+    ''' <returns></returns>
     Public ReadOnly Property [To] As Point
+    ''' <summary>
+    ''' You can assign the family or COG classified result for the colors.
+    ''' </summary>
+    ''' <returns></returns>
     Public ReadOnly Property Color As Color
 
     Sub New(from As Point, toPoint As Point, cl As Color)
@@ -25,7 +37,7 @@ Public MustInherit Class Line
 End Class
 
 ''' <summary>
-''' 
+''' A model for drawing a straight line.
 ''' </summary>
 ''' <remarks>
 ''' 这个绘图模型最简单
@@ -115,7 +127,8 @@ Public Class Bézier : Inherits Line
 End Class
 
 ''' <summary>
-''' 两个同源的基因之间的相连的线的样式
+''' The link line drawing style for the ortholog between the query and bbh hit.
+''' (两个同源的基因之间的相连的线的样式)
 ''' </summary>
 Public Enum LineStyles
     ''' <summary>
