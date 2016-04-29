@@ -7,7 +7,7 @@ Module Program
 
     Sub Main()
 
-        Dim html As String = "<font face=""Microsoft YaHei"" size=""5.5""><strong>text</strong><b><i>value</i></b></font> "
+        Dim html As String = "<font face=""Microsoft YaHei"" size=""5.5""><strong>text</strong><b> &lt;&lt;&lt; <i>value</i></b></font> "
 
         Dim strings = TextAPI.TryParse(html)
 
