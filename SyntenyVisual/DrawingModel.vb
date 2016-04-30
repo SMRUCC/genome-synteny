@@ -7,6 +7,10 @@ Public Class DrawingModel
     Public Property margin As Size
     Public Property Links As Line()
     Public Property size As Size
+    ''' <summary>
+    ''' 在这里控制基因组共线性的绘制的连线的粗细
+    ''' </summary>
+    ''' <returns></returns>
     Public Property penWidth As Integer
     Public Property briefs As GenomeBrief()
 
