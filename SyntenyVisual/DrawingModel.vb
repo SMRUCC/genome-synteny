@@ -23,15 +23,20 @@ Public Class DrawingModel
         Dim maxtLen As Integer = szs.Select(Function(x) x.Width).Max
         Dim cl As SolidBrush = New SolidBrush(Color.Black)
         Dim dh As Integer = GDIPlusExtensions.MeasureString(briefs.First.Name, font).Height / 2
+        Dim totalSize As New Size(size.Width + maxtLen * 1.5, size.Height)
 
-        Using gdi As GDIPlusDeviceHandle = New Size(size.Width + maxtLen * 1.5, size.Height).CreateGDIDevice
+        Using gdi As GDIPlusDeviceHandle = totalSize.CreateGDIDevice
             For Each lnk As Line In Links   ' 首先绘制连线
                 Call lnk.Draw(gdi, penWidth)
             Next
 
-            For Each x As GenomeBrief In briefs   '然后绘制基因组的简单表示，以及显示标题
-                Call gdi.DrawString(x.Name, font, cl, New Point(size.Width, x.Y - dh))
-                Call gdi.DrawLine(New Pen(Color.Gray, 10), New Point(margin.Width, x.Y), New Point(size.Width - margin.Width, x.Y))
+            For Each x As SeqValue(Of Vectors.Text) In texts.SeqIterator    '然后绘制基因组的简单表示，以及显示标题
+                Dim y As Integer = briefs(x).Y
+                Dim pt1 As New Point(margin.Width, y)
+                Dim pt2 As New Point(size.Width - margin.Width, y)
+
+                Call x.obj.Draw(gdi, New Point(size.Width, y - dh))
+                Call gdi.DrawLine(New Pen(Color.Gray, 10), pt1, pt2)
             Next
 
             Return gdi.ImageResource
