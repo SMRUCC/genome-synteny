@@ -1,4 +1,5 @@
 ﻿Imports System.Drawing
+Imports Microsoft.VisualBasic.ComponentModel.Collection.Generic
 Imports Microsoft.VisualBasic.DocumentFormat.Csv
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Serialization
@@ -49,8 +50,9 @@ Public Class DeviceModel : Inherits ClassObject
     End Function
 End Class
 
-Public Class Title
-    Public Property key As String
+Public Class Title : Implements sIdEnumerable
+
+    Public Property key As String Implements sIdEnumerable.Identifier
     ''' <summary>
     ''' 用来控制标题格式的html文本
     ''' </summary>

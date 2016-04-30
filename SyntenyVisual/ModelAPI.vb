@@ -53,6 +53,7 @@ Public Module ModelAPI
         Dim genomes As New List(Of GenomeBrief)
         Dim i As Integer
         Dim last As PTT = Nothing
+        Dim titles As Dictionary(Of Title) = model.GetTitles(DIR).ToDictionary
 
         For Each buf In spGroups
             Dim sp As String = buf.sp
