@@ -1,171 +1,159 @@
 ﻿Imports System.Drawing
+Imports LANS.SystemsBiology.Assembly.NCBI
 Imports LANS.SystemsBiology.ComponentModel
 Imports Microsoft.VisualBasic
 Imports Microsoft.VisualBasic.ComponentModel.DataStructures
+Imports Microsoft.VisualBasic.Imaging
+Imports Microsoft.VisualBasic.Language
+Imports Microsoft.VisualBasic.Linq
 
-Namespace ChromosomeMap.DrawingModels
+Public Module RenderingColor
 
-    Public Module RenderingColor
+    Private Function NeutralizeColor(data As Color()) As Color
+        Dim _r As Integer = CInt((From x As Color In data Select x.R).Average(Function(n) CInt(n)))
+        Dim _g As Integer = CInt((From x As Color In data Select x.G).Average(Function(n) CInt(n)))
+        Dim _b As Integer = CInt((From x As Color In data Select x.B).Average(Function(n) CInt(n)))
+        Return Color.FromArgb(data.First.A, _r, _g, _b)
+    End Function
 
-        Public Function ApplyingCOGCategoryColor(Of T As I_COGEntry)(MyvaCog As T(),
-                                                 Chromesome As DrawingModels.ChromesomeDrawingModel) As DrawingModels.ChromesomeDrawingModel
+    ''' <summary>
+    ''' 材质映射
+    ''' </summary>
+    ''' <param name="categories">假若这个参数为空，则默认是使用COG分类的映射规则</param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function CategoryMapsTextures(textures As Image(), Optional categories As String() = Nothing) As Dictionary(Of String, Brush)
+        If categories.IsNullOrEmpty Then
+            categories = LinqAPI.Exec(Of String) <= From category As COG.Category
+                                                    In COG.Function.Default.Categories
+                                                    Select From [class] As KeyValuePair
+                                                           In category.SubClasses
+                                                           Select [class].Key
+            categories = categories.Distinct.ToArray
+        End If
 
-            Dim ColorProfiles = InternalInitialize_COGColors(Nothing).ToDictionary(Function(obj) obj.Key, elementSelector:=Function(obj) CType(New SolidBrush(obj.Value), Brush))
-            Dim DefaultCogColor As SolidBrush = New SolidBrush(Chromesome.DrawingConfigurations.NoneCogColor)
+        Dim mapping As Dictionary(Of String, Brush) =
+            If(categories.Length > textures.Length,
+               __interpolateMapping(categories, textures), ' 材质不足，则会使用颜色来绘制
+               __directlyMapping(categories, textures))    ' 直接映射
 
-            For Each GeneObject In Chromesome.GeneObjects
-                Dim Cog = MyvaCog.GetItem(GeneObject.LocusTag)
-                If Not Cog Is Nothing Then
-                    If Not String.IsNullOrEmpty(Cog.Category) Then
-                        If Cog.Category.Count > 1 Then
-                            GeneObject.Color = New SolidBrush(NeutralizeColor((From c As Char In Cog.Category Select DirectCast(ColorProfiles(c.ToString), SolidBrush).Color).ToArray))
-                        Else
-                            GeneObject.Color = ColorProfiles(Cog.Category)
-                        End If
-                    Else
-                        GeneObject.Color = DefaultCogColor
-                    End If
-                Else
-                    GeneObject.Color = DefaultCogColor
-                End If
-            Next
+        Return mapping
+    End Function
 
-            Call Chromesome.MyvaCogColorProfile.InvokeSet(ColorProfiles)
+    ''' <summary>
+    ''' 材质不足，则会使用颜色来绘制
+    ''' </summary>
+    ''' <returns></returns>
+    Private Function __interpolateMapping(categories As String(), Textures As Image()) As Dictionary(Of String, Brush)
+        Dim TempChunk As String() = New String(Textures.Length - 1) {}
+        Dim hash As Dictionary(Of String, Brush) = New Dictionary(Of String, Brush)
 
-            Return Chromesome
-        End Function
+        Call Array.ConstrainedCopy(categories, 0, TempChunk, 0, TempChunk.Length)
 
-        Public Function ApplyingCOGNumberColors(Of T As I_COGEntry)(MyvaCog As T(),
-                                                Chromesome As DrawingModels.ChromesomeDrawingModel) As ChromesomeDrawingModel
-            Dim ColorProfiles = InternalInitialize_COGColors((From cogAlign In MyvaCog
-                                                              Select cogAlign.COG
-                                                              Distinct).ToArray).ToDictionary(Function(obj) obj.Key, elementSelector:=Function(obj) DirectCast(New SolidBrush(obj.Value), Brush))
-            Dim DefaultCogColor = New SolidBrush(Chromesome.DrawingConfigurations.NoneCogColor)
+        For i As Integer = 0 To TempChunk.Length - 1
+            Call hash.Add(TempChunk(i), New TextureBrush(Textures(i)))
+        Next
 
-            For Each GeneObject In Chromesome.GeneObjects
-                Dim Cog = MyvaCog.GetItem(GeneObject.LocusTag)
-                If Not Cog Is Nothing Then
-                    If Not String.IsNullOrEmpty(Cog.COG) Then
-                        GeneObject.Color = ColorProfiles(Cog.COG)
-                    Else
-                        GeneObject.Color = DefaultCogColor
-                    End If
-                Else
-                    GeneObject.Color = DefaultCogColor
-                End If
-            Next
+        '剩余的使用颜色
+        Dim ColorList As List(Of Color) = AllDotNetPrefixColors.ToList
+        categories = categories.Skip(TempChunk.Count).ToArray
+        Dim ChunkBuffer = categories.CreateSlideWindows(Textures.Count, Textures.Count)
+        Dim J As Integer = 0
 
-            Call Chromesome.MyvaCogColorProfile.InvokeSet(ColorProfiles)
+        Do While True
+            For Each CatList In ChunkBuffer
+                Dim Color As Color = ColorList(J)
 
-            Return Chromesome
-        End Function
-
-        Private Function NeutralizeColor(data As Color()) As Color
-            Dim _r = (From item In data Select item.R).ToArray.Average(Function(n As Byte) CType(n, Integer))
-            Dim _g = (From item In data Select item.G).ToArray.Average(Function(n As Byte) CType(n, Integer))
-            Dim _b = (From item In data Select item.B).ToArray.Average(Function(n As Byte) CType(n, Integer))
-            Return Color.FromArgb(data.First.A, _r, _g, _b)
-        End Function
-
-        ''' <summary>
-        ''' 材质映射
-        ''' </summary>
-        ''' <param name="categories"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Function InternalInitialize_COGColors(categories As String(), Textures As Image()) As Dictionary(Of String, Brush)
-            If categories.IsNullOrEmpty Then
-                categories = (From Category
-                    In LANS.SystemsBiology.Assembly.NCBI.COG.Function.Default.Categories
-                              Select (From [Class] In Category.SubClasses Select [Class].Key).ToArray).ToArray.MatrixToList.Distinct.ToArray
-            End If
-
-            Dim mapping = If(categories.Count > Textures.Count,
-                InterpolateMapping(categories, Textures), ' 材质不足，则会使用颜色来绘制
-                DirectlyMapping(categories, Textures))    ' 直接映射
-
-            Return mapping
-        End Function
-
-        ''' <summary>
-        ''' 材质不足，则会使用颜色来绘制
-        ''' </summary>
-        ''' <returns></returns>
-        Private Function InterpolateMapping(categories As String(), Textures As Image()) As Dictionary(Of String, Brush)
-            Dim TempChunk As String() = New String(Textures.Count - 1) {}
-            Dim DictData As Dictionary(Of String, Brush) = New Dictionary(Of String, Brush)
-
-            Call Array.ConstrainedCopy(categories, 0, TempChunk, 0, TempChunk.Length)
-
-            For i As Integer = 0 To TempChunk.Count - 1
-                Call DictData.Add(TempChunk(i), New TextureBrush(Textures(i)))
-            Next
-
-            '剩余的使用颜色
-            Dim ColorList As List(Of Color) = AllDotNetPrefixColors.ToList
-            categories = categories.Skip(TempChunk.Count).ToArray
-            Dim ChunkBuffer = categories.CreateSlideWindows(Textures.Count, Textures.Count)
-            Dim J As Integer = 0
-
-            Do While True
-                For Each CatList In ChunkBuffer
-                    Dim Color = ColorList(J)
-
-                    For i As Integer = 0 To CatList.Elements.Count - 1
-                        Dim res = TextureResourceLoader.AdjustColor(Textures(i), Color)
-                        Call DictData.Add(CatList(i), New TextureBrush(res))
-                    Next
-
-                    J += 1
-                Next
-            Loop
-
-            Return DictData
-        End Function
-
-        ''' <summary>
-        ''' 直接映射
-        ''' </summary>
-        ''' <param name="categories"></param>
-        ''' <returns></returns>
-        Private Function DirectlyMapping(categories As String(), Textures As Image()) As Dictionary(Of String, Brush)
-            Dim DictData As Dictionary(Of String, Brush) = New Dictionary(Of String, Brush)
-
-            For i As Integer = 0 To categories.Count - 1
-                Call DictData.Add(categories(i), New TextureBrush(Textures(i)))
-            Next
-
-            Return DictData
-        End Function
-
-        ''' <summary>
-        ''' 这是一个很通用的颜色谱创建函数
-        ''' </summary>
-        ''' <param name="categories">当不为空的时候，会返回一个列表，其中空字符串会被排除掉，故而在返回值之中需要自己添加一个空值的默认颜色</param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Function InternalInitialize_COGColors(categories As String()) As Dictionary(Of String, System.Drawing.Color)
-            If Not categories.IsNullOrEmpty Then
-                Return ComponentModel.ColorProfiles.GenerateColorProfiles(categories)
-            End If
-
-            Dim CogCategory = LANS.SystemsBiology.Assembly.NCBI.COG.Function.Default
-            Dim f = 255 / CogCategory.Categories.Count
-            Dim ColorProfile = New Dictionary(Of String, Color)
-
-            Dim R = f
-            For Each cata In CogCategory.Categories
-                Dim f2 = 255 / cata.SubClasses.Count
-                Dim G = f2
-                For Each [class] In cata.SubClasses
-                    Call ColorProfile.Add([class].Key, Color.FromArgb(220, R, G, 255 * RandomDouble()))
-                    G += f2
+                For i As Integer = 0 To CatList.Elements.Count - 1
+                    Dim res = TextureResourceLoader.AdjustColor(Textures(i), Color)
+                    Call hash.Add(CatList(i), New TextureBrush(res))
                 Next
 
-                R += f
+                J += 1
+            Next
+        Loop
+
+        Return hash
+    End Function
+
+    ''' <summary>
+    ''' 直接映射
+    ''' </summary>
+    ''' <param name="categories"></param>
+    ''' <returns></returns>
+    Private Function __directlyMapping(categories As String(), Textures As Image()) As Dictionary(Of String, Brush)
+        Dim DictData As Dictionary(Of String, Brush) = New Dictionary(Of String, Brush)
+
+        For i As Integer = 0 To categories.Count - 1
+            Call DictData.Add(categories(i), New TextureBrush(Textures(i)))
+        Next
+
+        Return DictData
+    End Function
+
+    ''' <summary>
+    ''' 这是一个很通用的颜色谱创建函数
+    ''' </summary>
+    ''' <param name="categories">当不为空的时候，会返回一个列表，其中空字符串会被排除掉，故而在返回值之中需要自己添加一个空值的默认颜色</param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function InitCOGColors(categories As String()) As Dictionary(Of String, Color)
+        If Not categories.IsNullOrEmpty Then
+            Return GenerateColorProfiles(categories)
+        End If
+
+        Dim CogCategory As COG.Function =
+            COG.Function.Default
+        Dim f As Double = 255 / CogCategory.Categories.Length
+        Dim R As Double = f
+        Dim COGColors As New Dictionary(Of String, Color)
+        Dim cl As Color
+
+        For Each cata As COG.Category In CogCategory.Categories
+            Dim f2 As Double = 255 / cata.SubClasses.Length
+            Dim G As Double = f2
+
+            For Each [class] As KeyValuePair In cata.SubClasses
+                cl = Color.FromArgb(220, R, G, 255 * RandomDouble())
+                G += f2
+
+                Call COGColors.Add([class].Key, cl)
             Next
 
-            Return ColorProfile
-        End Function
-    End Module
-End Namespace
+            R += f
+        Next
+
+        Return COGColors
+    End Function
+
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <param name="categories"></param>
+    ''' <param name="removeUsed">是否移除已经使用过的元素，这样子就会产生不重复的颜色</param>
+    ''' <returns></returns>
+    Public Function GenerateColorProfiles(categories As String(), Optional removeUsed As Boolean = True) As Dictionary(Of String, Color)
+        Dim Colors As Dictionary(Of String, Color) = New Dictionary(Of String, Color)
+        Dim Rs As New List(Of Integer)(255.Sequence.Randomize)
+        Dim Gs As New List(Of Integer)(255.Sequence.Randomize)
+        Dim Bs As New List(Of Integer)(255.Sequence.Randomize)
+
+        For Each Color As String In From s As String In categories Where Not String.IsNullOrEmpty(s) Select s
+            Dim R, G, B As Integer
+
+            Call VBMath.Randomize() : R = RandomDouble() * (Rs.Count - 1)
+            Call VBMath.Randomize() : G = RandomDouble() * (Gs.Count - 1)
+            Call VBMath.Randomize() : B = RandomDouble() * (Bs.Count - 1)
+
+            Call Colors.Add(Color, System.Drawing.Color.FromArgb(Rs(R), Gs(G), Bs(B)))
+
+            If removeUsed Then
+                Call Rs.RemoveAt(R)
+                Call Gs.RemoveAt(G)
+                Call Bs.RemoveAt(B)
+            End If
+        Next
+
+        Return Colors
+    End Function
+End Module
