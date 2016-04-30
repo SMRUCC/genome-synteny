@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C7C6BB3D-210C-4F6F-96AE-E499A2875771}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>GCModeller.DataVisualization</RootNamespace>
-    <AssemblyName>GCModeller.DataVisualization</AssemblyName>
+    <RootNamespace>LANS.SystemsBiology.GCModeller.DataVisualization</RootNamespace>
+    <AssemblyName>LANS.SystemsBiology.GCModeller.DataVisualization.Extensions</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
@@ -19,7 +19,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>GCModeller.DataVisualization.xml</DocumentationFile>
+    <DocumentationFile>LANS.SystemsBiology.GCModeller.DataVisualization.Extensions.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -28,7 +28,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>GCModeller.DataVisualization.xml</DocumentationFile>
+    <DocumentationFile>LANS.SystemsBiology.GCModeller.DataVisualization.Extensions.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>

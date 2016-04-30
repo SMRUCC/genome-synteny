@@ -6,9 +6,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{7A0874A9-2E3B-4708-A777-8DDD7EDC50A7}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>SyntenyVisual.Program</StartupObject>
-    <RootNamespace>SyntenyVisual</RootNamespace>
-    <AssemblyName>SyntenyVisual</AssemblyName>
+    <StartupObject>LANS.SystemsBiology.GCModeller.DataVisualization.SyntenyVisual.Program</StartupObject>
+    <RootNamespace>LANS.SystemsBiology.GCModeller.DataVisualization.SyntenyVisual</RootNamespace>
+    <AssemblyName>LANS.SystemsBiology.GCModeller.DataVisualization.SyntenyVisual</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Console</MyType>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
@@ -22,7 +22,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>SyntenyVisual.xml</DocumentationFile>
+    <DocumentationFile>LANS.SystemsBiology.GCModeller.DataVisualization.SyntenyVisual.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -32,7 +32,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>SyntenyVisual.xml</DocumentationFile>
+    <DocumentationFile>LANS.SystemsBiology.GCModeller.DataVisualization.SyntenyVisual.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -137,9 +137,9 @@
       <Project>{fecce1fd-e1d4-49e3-a668-60bb5e7aed99}</Project>
       <Name>+Microsoft.VisualBasic.Architecture.Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GCModeller.DataVisualization\GCModeller.DataVisualization.vbproj">
+    <ProjectReference Include="..\GCModeller.DataVisualization\DataVisualizationExtensions.vbproj">
       <Project>{c7c6bb3d-210c-4f6f-96ae-e499a2875771}</Project>
-      <Name>GCModeller.DataVisualization</Name>
+      <Name>DataVisualizationExtensions</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

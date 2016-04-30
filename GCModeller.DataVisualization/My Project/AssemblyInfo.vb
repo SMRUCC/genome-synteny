@@ -8,12 +8,12 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("GCModeller.DataVisualization")> 
-<Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("GCModeller.DataVisualization")> 
-<Assembly: AssemblyCopyright("Copyright ©  2016")> 
-<Assembly: AssemblyTrademark("")> 
+<Assembly: AssemblyTitle("GCModeller DataVisualization Extensions base")>
+<Assembly: AssemblyDescription("GCModeller DataVisualization Extensions base")>
+<Assembly: AssemblyCompany("SMRUCC")>
+<Assembly: AssemblyProduct("DataVisualization")>
+<Assembly: AssemblyCopyright("Copyright © xie.guigang@gcmodeller.org 2016")>
+<Assembly: AssemblyTrademark("GCModeller")>
 
 <Assembly: ComVisible(False)>
 
