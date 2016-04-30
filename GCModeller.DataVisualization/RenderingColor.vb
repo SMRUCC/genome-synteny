@@ -45,18 +45,18 @@ Public Module RenderingColor
     ''' </summary>
     ''' <returns></returns>
     Private Function __interpolateMapping(categories As String(), Textures As Image()) As Dictionary(Of String, Brush)
-        Dim TempChunk As String() = New String(Textures.Length - 1) {}
+        Dim tmpBuf As String() = New String(Textures.Length - 1) {}
         Dim hash As Dictionary(Of String, Brush) = New Dictionary(Of String, Brush)
 
-        Call Array.ConstrainedCopy(categories, 0, TempChunk, 0, TempChunk.Length)
+        Call Array.ConstrainedCopy(categories, 0, tmpBuf, 0, tmpBuf.Length)
 
-        For i As Integer = 0 To TempChunk.Length - 1
-            Call hash.Add(TempChunk(i), New TextureBrush(Textures(i)))
+        For i As Integer = 0 To tmpBuf.Length - 1
+            Call hash.Add(tmpBuf(i), New TextureBrush(Textures(i)))
         Next
 
         '剩余的使用颜色
         Dim ColorList As List(Of Color) = AllDotNetPrefixColors.ToList
-        categories = categories.Skip(TempChunk.Count).ToArray
+        categories = categories.Skip(tmpBuf.Count).ToArray
         Dim ChunkBuffer = categories.CreateSlideWindows(Textures.Count, Textures.Count)
         Dim J As Integer = 0
 
@@ -64,7 +64,7 @@ Public Module RenderingColor
             For Each CatList In ChunkBuffer
                 Dim Color As Color = ColorList(J)
 
-                For i As Integer = 0 To CatList.Elements.Count - 1
+                For i As Integer = 0 To CatList.Elements.Length - 1
                     Dim res = TextureResourceLoader.AdjustColor(Textures(i), Color)
                     Call hash.Add(CatList(i), New TextureBrush(res))
                 Next
