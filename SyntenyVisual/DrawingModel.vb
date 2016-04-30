@@ -43,7 +43,7 @@ Public Class GenomeBrief
 
     Public Property Y As Integer
     ''' <summary>
-    ''' The display title
+    ''' The display title.(由于需要兼容html文本，所以这里是被当做html文本来对待了)
     ''' </summary>
     ''' <returns></returns>
     Public Property Name As String

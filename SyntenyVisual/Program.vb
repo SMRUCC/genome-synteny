@@ -9,8 +9,9 @@ Module Program
 
         Dim html As String = "<font face=""Microsoft YaHei"" size=""5.5""><strong>text</strong><b> &lt;&lt;&lt; <i>value</i></b></font> "
 
-        Dim strings = TextAPI.TryParse(html)
 
+        Dim strings = TextAPI.TryParse(html)
+        strings = TextAPI.TryParse("1234   56789    &lt;")
 
         Dim gdi As GDIPlusDeviceHandle = New Size(1200, 800).CreateGDIDevice
 
