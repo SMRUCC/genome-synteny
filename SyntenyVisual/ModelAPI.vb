@@ -1,4 +1,5 @@
 ﻿Imports System.Runtime.CompilerServices
+Imports System.Drawing
 Imports LANS.SystemsBiology.Assembly.NCBI.GenBank
 Imports LANS.SystemsBiology.Assembly.NCBI.GenBank.TabularFormat
 Imports LANS.SystemsBiology.NCBI.Extensions
@@ -8,7 +9,6 @@ Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.ComponentModel.DataStructures
 Imports Microsoft.VisualBasic
 Imports Microsoft.VisualBasic.Linq
-Imports System.Drawing
 Imports Microsoft.VisualBasic.Imaging
 
 Public Module ModelAPI
@@ -54,12 +54,20 @@ Public Module ModelAPI
         Dim i As Integer
         Dim last As PTT = Nothing
         Dim titles As Dictionary(Of Title) = model.GetTitles(DIR).ToDictionary
+        Dim lastsp As String = Nothing
+        Dim title As String
 
         For Each buf In spGroups
             Dim sp As String = buf.sp
             Dim hit As String = maps(i.MoveNext).Elements.Last
             Dim query As PTT = PTT(sp)
             Dim hitBrief As PTT = PTT(hit)
+
+            title = query.Title
+
+            If titles.ContainsKey(sp) Then
+                title = titles(sp).Title
+            End If
 
             links += OrthologAPI.FromBBH(
                 buf.Group.ToArray(Function(x) x.x),
@@ -72,17 +80,24 @@ Public Module ModelAPI
                 model.Margin.Width,
                 style)
             genomes += New GenomeBrief With {
-                .Name = query.Title,
+                .Name = title,
                 .Size = query.Size,
                 .Y = h1
             }
             h1 += height
             h2 += height
             last = hitBrief
+            lastsp = buf.sp
         Next
 
+        title = last.Title
+
+        If titles.ContainsKey(lastsp) Then
+            title = titles(lastsp).Title
+        End If
+
         genomes += New GenomeBrief With {
-            .Name = last.Title,
+            .Name = title,
             .Size = last.Size,
             .Y = h1
         }
