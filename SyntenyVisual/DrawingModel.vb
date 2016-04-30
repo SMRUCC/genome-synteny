@@ -1,6 +1,8 @@
 ﻿Imports System.Drawing
 Imports Microsoft.VisualBasic.Imaging
+Imports Microsoft.VisualBasic.Imaging.Drawing2D
 Imports Microsoft.VisualBasic.Serialization
+Imports Microsoft.VisualBasic.Linq
 
 Public Class DrawingModel
 
@@ -15,9 +17,10 @@ Public Class DrawingModel
     Public Property briefs As GenomeBrief()
 
     Public Function Visualize() As Image
-        Dim font As New Font(FontFace.MicrosoftYaHei, 12, FontStyle.Italic)
-        Dim maxtLen As Integer = briefs _
-            .Select(Function(x) GDIPlusExtensions.MeasureString(x.Name, font).Width).Max
+        Dim font As New Font(FontFace.MicrosoftYaHei, 12, FontStyle.Italic)  ' 默认的字体
+        Dim texts As Vectors.Text() = briefs.ToArray(Function(x) Vectors.GetText(x.Name, font))
+        Dim szs As SizeF() = __getSize(texts)
+        Dim maxtLen As Integer = szs.Select(Function(x) x.Width).Max
         Dim cl As SolidBrush = New SolidBrush(Color.Black)
         Dim dh As Integer = GDIPlusExtensions.MeasureString(briefs.First.Name, font).Height / 2
 
@@ -32,6 +35,12 @@ Public Class DrawingModel
             Next
 
             Return gdi.ImageResource
+        End Using
+    End Function
+
+    Private Function __getSize(texts As Vectors.Text()) As SizeF()
+        Using gdi As GDIPlusDeviceHandle = New Size(10, 10).CreateGDIDevice
+            Return texts.ToArray(Function(x) x.MeasureString(gdi))
         End Using
     End Function
 End Class

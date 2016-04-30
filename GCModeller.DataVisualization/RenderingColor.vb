@@ -24,11 +24,12 @@ Public Module RenderingColor
     ''' <remarks></remarks>
     Public Function CategoryMapsTextures(textures As Image(), Optional categories As String() = Nothing) As Dictionary(Of String, Brush)
         If categories.IsNullOrEmpty Then
-            categories = LinqAPI.Exec(Of String) <= From category As COG.Category
-                                                    In COG.Function.Default.Categories
-                                                    Select From [class] As KeyValuePair
-                                                           In category.SubClasses
-                                                           Select [class].Key
+            categories = LinqAPI.Exec(Of String) <=
+                From category As COG.Category
+                In COG.Function.Default.Categories
+                Select From [class] As KeyValuePair
+                       In category.SubClasses
+                       Select [class].Key
             categories = categories.Distinct.ToArray
         End If
 
