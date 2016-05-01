@@ -1,4 +1,6 @@
-﻿Imports System.Drawing
+﻿Imports System
+Imports System.Drawing
+Imports LANS.SystemsBiology.GCModeller.DataVisualization.SyntenyVisual
 Imports Microsoft.VisualBasic.CommandLine
 Imports Microsoft.VisualBasic.DocumentFormat.Csv
 Imports Microsoft.VisualBasic.DocumentFormat.HTML

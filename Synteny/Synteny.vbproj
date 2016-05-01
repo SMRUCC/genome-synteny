@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7A0874A9-2E3B-4708-A777-8DDD7EDC50A7}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <StartupObject>
-    </StartupObject>
-    <RootNamespace>LANS.SystemsBiology.GCModeller.DataVisualization.SyntenyVisual</RootNamespace>
-    <AssemblyName>LANS.SystemsBiology.GCModeller.DataVisualization.SyntenyVisual</AssemblyName>
+    <ProjectGuid>{C54031F0-8BF6-4A21-8598-B88C80A48473}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <StartupObject>Synteny.Program</StartupObject>
+    <RootNamespace>Synteny</RootNamespace>
+    <AssemblyName>Synteny</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <MyType>Windows</MyType>
+    <MyType>Console</MyType>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -23,7 +22,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>LANS.SystemsBiology.GCModeller.DataVisualization.SyntenyVisual.xml</DocumentationFile>
+    <DocumentationFile>Synteny.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -33,7 +32,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>LANS.SystemsBiology.GCModeller.DataVisualization.SyntenyVisual.xml</DocumentationFile>
+    <DocumentationFile>Synteny.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -53,7 +52,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DocumentationFile>LANS.SystemsBiology.GCModeller.DataVisualization.SyntenyVisual.xml</DocumentationFile>
+    <DocumentationFile>Synteny.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -63,7 +62,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DocumentationFile>LANS.SystemsBiology.GCModeller.DataVisualization.SyntenyVisual.xml</DocumentationFile>
+    <DocumentationFile>Synteny.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -94,11 +93,6 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DrawingModel.vb" />
-    <Compile Include="ModelAPI.vb" />
-    <Compile Include="LinkLines.vb" />
-    <Compile Include="Ortholog.vb" />
-    <Compile Include="DeviceModel.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -114,6 +108,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Program.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -163,6 +158,10 @@
     <ProjectReference Include="..\GCModeller.DataVisualization\DataVisualizationExtensions.vbproj">
       <Project>{c7c6bb3d-210c-4f6f-96ae-e499a2875771}</Project>
       <Name>DataVisualizationExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SyntenyVisual\SyntenyVisual.vbproj">
+      <Project>{7a0874a9-2e3b-4708-a777-8ddd7edc50a7}</Project>
+      <Name>SyntenyVisual</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
