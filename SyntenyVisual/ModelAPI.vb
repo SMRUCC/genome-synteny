@@ -74,9 +74,9 @@ Public Module ModelAPI
     ''' Convert data model <see cref="DeviceModel"/> to drawing object model <see cref="DrawingModel"/>
     ''' </summary>
     ''' <param name="path">The json file path of the drawing data model <see cref="DeviceModel"/></param>
-    ''' <param name="style">The link line style</param>
+    ''' <param name="style">The link line style.(假若设置了这个参数的话，就会将模型里面的数据给覆盖掉)</param>
     ''' <returns></returns>
-    Public Function GetDrawsModel(path As String, Optional style As LineStyles = LineStyles.Polyline) As DrawingModel
+    Public Function GetDrawsModel(path As String, Optional style As LineStyles = LineStyles.NotSpecific) As DrawingModel
         Dim model As DeviceModel = Serialization.LoadJsonFile(Of DeviceModel)(path)
         Dim DIR As New Directory(path.ParentPath)
         Dim bbhMeta As Analysis.BestHit =
@@ -114,6 +114,13 @@ Public Module ModelAPI
         Dim lastsp As String = Nothing
         Dim title As String
         Dim colorMaps As New __colorHelper(bbhMeta, model.GetColors(DIR))
+
+        If style = LineStyles.NotSpecific Then
+            style = model.style
+        End If
+        If style = LineStyles.NotSpecific Then  '由于可能模型里面的定义也是空的，所以在这里还需要再判断一次
+            style = LineStyles.Straight
+        End If
 
         For Each buf In spGroups
             Dim sp As String = buf.sp

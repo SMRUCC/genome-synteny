@@ -26,6 +26,7 @@ Public Class DeviceModel : Inherits ClassObject
     ''' <returns></returns>
     Public Property Colors As String
     Public Property DefaultColor As String
+    Public Property style As LineStyles
 
     Public Function GetColors(DIR As Directory) As ColorMgr
         Dim path As String
@@ -72,7 +73,8 @@ Public Class DeviceModel : Inherits ClassObject
             .Margin = New Size(25, 25),
             .Orders = {"xcb", "xor"},
             .penWidth = 3,
-            .DefaultColor = NameOf(Color.LightSkyBlue)
+            .DefaultColor = NameOf(Color.LightSkyBlue),
+            .style = LineStyles.Polyline
         }
     End Function
 End Class

@@ -130,7 +130,9 @@ End Class
 ''' The link line drawing style for the ortholog between the query and bbh hit.
 ''' (两个同源的基因之间的相连的线的样式)
 ''' </summary>
-Public Enum LineStyles
+Public Enum LineStyles As Integer
+
+    NotSpecific = 0
     ''' <summary>
     ''' 直线
     ''' </summary>
