@@ -18,6 +18,12 @@ Public Class ColorMgr
     ''' </summary>
     ReadOnly __categories As String()
 
+    Public ReadOnly Property [Default] As Color
+        Get
+            Return __colorMaps.__default
+        End Get
+    End Property
+
     Sub New(source As IEnumerable(Of ClMap), [default] As Color)
         __entityMaps = source.ToDictionary
         __categories = (From x As ClMap In source Select x.map Distinct).ToArray

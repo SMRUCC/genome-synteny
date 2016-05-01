@@ -1,4 +1,5 @@
 ﻿Imports System.Drawing
+Imports Microsoft.VisualBasic.DocumentFormat.Csv
 Imports Microsoft.VisualBasic.DocumentFormat.HTML
 Imports Microsoft.VisualBasic.Imaging
 Imports Microsoft.VisualBasic.Serialization
@@ -9,6 +10,8 @@ Module Program
 
         Dim html As String = "<font face=""Microsoft YaHei"" size=""5.5""><strong>text</strong><b> &lt;&lt;&lt; <i>value</i></b></font> "
 
+
+        Call New ClMap() {}.SaveTo("./colors.csv")
 
         Dim strings = TextAPI.TryParse(html)
         strings = TextAPI.TryParse("1234   56789    &lt;")

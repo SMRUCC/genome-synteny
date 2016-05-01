@@ -44,12 +44,27 @@ Public Module ModelAPI
         ''' <param name="b"></param>
         ''' <returns></returns>
         Public Function GetColor(a As GeneBrief, b As GeneBrief) As Color
-            If Array.IndexOf(__reference, a.Synonym) > -1 Then
+            If Not a Is Nothing AndAlso
+                Array.IndexOf(__reference, a.Synonym) > -1 Then
                 Return __clProfiles.GetEntityColor(a.Synonym)
-            ElseIf Array.IndexOf(__reference, b.Synonym) > -1 Then
+            ElseIf Not b Is Nothing AndAlso
+                Array.IndexOf(__reference, b.Synonym) > -1 Then
                 Return __clProfiles.GetEntityColor(b.Synonym)
             Else
-                Dim query As String = __refMaps(a.Synonym).First
+                Dim query As String
+
+                If a Is Nothing AndAlso b Is Nothing Then
+                    Return __clProfiles.Default
+                End If
+
+                If a Is Nothing Then
+                    query = b.Synonym
+                Else
+                    query = a.Synonym
+                End If
+
+                query = __refMaps(query).First
+
                 Return __clProfiles.GetEntityColor(query)
             End If
         End Function
