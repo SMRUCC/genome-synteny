@@ -26,7 +26,7 @@ Public Class ColorMgr
     End Sub
 
     ''' <summary>
-    ''' 
+    ''' <see cref="ClMap.Identifier"/>
     ''' </summary>
     ''' <param name="id"><see cref="ClMap.Identifier"/></param>
     ''' <returns></returns>
@@ -39,7 +39,7 @@ Public Class ColorMgr
     End Function
 
     ''' <summary>
-    ''' 
+    ''' <see cref="ClMap.map"/>
     ''' </summary>
     ''' <param name="category"><see cref="ClMap.map"/></param>
     ''' <returns></returns>

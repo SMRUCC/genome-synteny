@@ -10,8 +10,50 @@ Imports Microsoft.VisualBasic.ComponentModel.DataStructures
 Imports Microsoft.VisualBasic
 Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.Imaging
+Imports LANS.SystemsBiology.Assembly.NCBI.GenBank.TabularFormat.ComponentModels
 
 Public Module ModelAPI
+
+    Private Structure __colorHelper
+
+        ReadOnly __reference As String()
+        ReadOnly __clProfiles As ColorMgr
+        ReadOnly __refMaps As Dictionary(Of String, String())
+
+        Sub New(model As Analysis.BestHit, mgr As ColorMgr)
+            __reference = model.hits.ToArray(Function(x) x.QueryName)
+            __clProfiles = mgr
+
+            Dim LQuery = (From x As HitCollection
+                          In model.hits
+                          Select From hit As Hit
+                                 In x.Hits
+                                 Select hit.HitName,
+                                     x.QueryName).MatrixAsIterator
+            __refMaps = (From x In LQuery
+                         Select x
+                         Group x By x.HitName Into Group) _
+                              .ToDictionary(Function(x) x.HitName,
+                                            Function(x) x.Group.ToArray(Function(o) o.QueryName))
+        End Sub
+
+        ''' <summary>
+        ''' 找到reference，然后就可以得到颜色了
+        ''' </summary>
+        ''' <param name="a"></param>
+        ''' <param name="b"></param>
+        ''' <returns></returns>
+        Public Function GetColor(a As GeneBrief, b As GeneBrief) As Color
+            If Array.IndexOf(__reference, a.Synonym) > -1 Then
+                Return __clProfiles.GetEntityColor(a.Synonym)
+            ElseIf Array.IndexOf(__reference, b.Synonym) > -1 Then
+                Return __clProfiles.GetEntityColor(b.Synonym)
+            Else
+                Dim query As String = __refMaps(a.Synonym).First
+                Return __clProfiles.GetEntityColor(query)
+            End If
+        End Function
+    End Structure
 
     ''' <summary>
     ''' Convert data model <see cref="DeviceModel"/> to drawing object model <see cref="DrawingModel"/>
@@ -56,6 +98,7 @@ Public Module ModelAPI
         Dim titles As Dictionary(Of Title) = model.GetTitles(DIR).ToDictionary
         Dim lastsp As String = Nothing
         Dim title As String
+        Dim colorMaps As New __colorHelper(bbhMeta, model.GetColors(DIR))
 
         For Each buf In spGroups
             Dim sp As String = buf.sp
@@ -73,7 +116,7 @@ Public Module ModelAPI
                 buf.Group.ToArray(Function(x) x.x),
                 query,
                 hitBrief,
-                Function() Color.LightSkyBlue,
+                AddressOf colorMaps.GetColor,
                 h1,
                 h2,
                 width,
