@@ -1,4 +1,5 @@
 ﻿Imports System.Drawing
+Imports System.Runtime.CompilerServices
 Imports LANS.SystemsBiology.Assembly.NCBI
 Imports LANS.SystemsBiology.ComponentModel
 Imports Microsoft.VisualBasic
@@ -133,6 +134,8 @@ Public Module RenderingColor
     ''' <param name="categories"></param>
     ''' <param name="removeUsed">是否移除已经使用过的元素，这样子就会产生不重复的颜色</param>
     ''' <returns></returns>
+    ''' 
+    <Extension>
     Public Function GenerateColorProfiles(categories As String(), Optional removeUsed As Boolean = True) As Dictionary(Of String, Color)
         Dim Colors As Dictionary(Of String, Color) = New Dictionary(Of String, Color)
         Dim Rs As New List(Of Integer)(255.Sequence.Randomize)
