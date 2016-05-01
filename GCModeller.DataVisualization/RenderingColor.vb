@@ -23,6 +23,8 @@ Public Module RenderingColor
     ''' <param name="categories">假若这个参数为空，则默认是使用COG分类的映射规则</param>
     ''' <returns></returns>
     ''' <remarks></remarks>
+    ''' 
+    <Extension>
     Public Function CategoryMapsTextures(textures As Image(), Optional categories As String() = Nothing) As Dictionary(Of String, Brush)
         If categories.IsNullOrEmpty Then
             categories = LinqAPI.Exec(Of String) <=

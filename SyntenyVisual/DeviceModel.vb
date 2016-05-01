@@ -1,6 +1,8 @@
 ﻿Imports System.Drawing
+Imports LANS.SystemsBiology.GCModeller.DataVisualization
 Imports Microsoft.VisualBasic.ComponentModel.Collection.Generic
 Imports Microsoft.VisualBasic.DocumentFormat.Csv
+Imports Microsoft.VisualBasic.Imaging
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Serialization
 
@@ -18,6 +20,30 @@ Public Class DeviceModel : Inherits ClassObject
     Public Property PTT As Dictionary(Of String, String)
     Public Property Orders As String()
     Public Property Titles As String
+    ''' <summary>
+    ''' <see cref="ClMap"/>
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property Colors As String
+    Public Property DefaultColor As String
+
+    Public Function GetColors(DIR As Directory) As ColorMgr
+        Dim path As String
+
+        If String.IsNullOrEmpty(Colors) Then
+            path = DIR.GetFullPath("./colors.Csv")
+        Else
+            path = DIR.GetFullPath(Colors)
+        End If
+
+        Dim [default] As Color = DefaultColor.ToColor
+
+        If Not path.FileExists Then
+            Return New ColorMgr({}, [default])
+        Else
+            Return New ColorMgr(path.LoadCsv(Of ClMap), [default])
+        End If
+    End Function
 
     Public Function GetTitles(DIR As Directory) As Title()
         Dim path As String
@@ -45,7 +71,8 @@ Public Class DeviceModel : Inherits ClassObject
             },
             .Margin = New Size(25, 25),
             .Orders = {"xcb", "xor"},
-            .penWidth = 3
+            .penWidth = 3,
+            .DefaultColor = NameOf(Color.LightSkyBlue)
         }
     End Function
 End Class

@@ -46,6 +46,10 @@ Public Class ColorMgr
     Public Function GetValue(category As String) As Color
         Return __colorMaps.GetValue(category)
     End Function
+
+    Public Overrides Function ToString() As String
+        Return __categories.GetJson
+    End Function
 End Class
 
 Public Class ClMap : Implements sIdEnumerable
