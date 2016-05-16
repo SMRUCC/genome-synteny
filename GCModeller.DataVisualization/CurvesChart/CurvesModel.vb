@@ -23,9 +23,8 @@ Public MustInherit Class CurvesModel
     Public Function Draw(source As Image, buf As Double(), location As Point, size As Size) As Image
         Using g As IGraphics = source.GdiFromImage
             Call Draw(g, buf, location, size, New DoubleRange(buf.Min, buf.Max))
+            Return DirectCast(g, GDIPlusDeviceHandle).ImageResource
         End Using
-
-        Return source
     End Function
 
     Protected MustOverride Sub Draw(ByRef source As IGraphics, buf As Double(), location As Point, size As Size, yRange As DoubleRange)
