@@ -43,7 +43,7 @@ Public Module GCSkew
     <ExportAPI("GC.Content.Drawing")>
     Public Function InvokeDrawingGCContent(source As Image, nt As FASTA.FastaToken, Location As Point, Width As Integer) As Image
         Dim GCContent As Double() = NucleotideModels.GCContent(nt, WindowSize, Steps, True)
-        Return InvokeDrawingCurve(source, GCContent, Location, New Size(Width, PlotsHeight), Loci:=__getLoci(nt))
+        Return InvokeDrawingCurve(source, GCContent, Location, New Size(Width, PlotsHeight), loci:=__getLoci(nt))
     End Function
 
     Private Function __getLoci(nt As FASTA.FastaToken) As Loci.Location
@@ -63,21 +63,39 @@ Public Module GCSkew
         Return Loci
     End Function
 
+    ''' <summary>
+    ''' 绘制基本的坐标轴
+    ''' </summary>
+    ''' <param name="g"></param>
+    ''' <param name="location"></param>
+    ''' <param name="size"></param>
+    ''' <param name="tagFont"></param>
+    Public Sub DrawAixs(g As GDIPlusDeviceHandle, location As Point, size As Size, tagFont As Font, min As Double, max As Double)
+        Dim aixsSize As Size = "0".MeasureString(tagFont)
+        Dim vertex As Point = New Point(location.X, location.Y - size.Height)
+        Dim tmpLoci As New Point(location.X - YValueOffset,
+                                 location.Y - aixsSize.Height / 2)
+
+        Call g.DrawString(Mid(min.ToString, 1, 5),
+                          font:=tagFont,
+                          brush:=Brushes.Black,
+                          point:=tmpLoci)
+        Call g.DrawString(Mid(max.ToString, 1, 5),
+                          tagFont,
+                          Brushes.Black,
+                          New Point(vertex.X - YValueOffset, vertex.Y - aixsSize.Height / 2))
+    End Sub
+
     <ExportAPI("Curve.Drawing")>
-    Public Function InvokeDrawingCurve(source As Image, ChunkBuffer As Double(), Location As Point, size As Size, Loci As Loci.Location) As Image
+    Public Function InvokeDrawingCurve(source As Image, buf As Double(), location As Point, size As Size, loci As Loci.Location) As Image
         Dim Gr As GDIPlusDeviceHandle = source.GdiFromImage
-        Dim Max = ChunkBuffer.Max
-        Dim Min = ChunkBuffer.Min
+        Dim Max As Double = buf.Max
+        Dim Min As Double = buf.Min
+        Dim LinePen As New Pen(color:=Color.FromArgb(30, Color.LightGray), width:=0.3)
+        Dim tagFont As New Font(FontFace.Ubuntu, 12)
 
-        Dim LinePen As Pen = New Pen(color:=Color.FromArgb(30, Color.LightGray), width:=0.3)
-        Dim TagFont As New Font(FontFace.Ubuntu, 12)
-        Dim AixsSize = "0".MeasureString(TagFont)
+        Call DrawAixs(Gr, location, size, tagFont, Min, Max)
 
-        '绘制基本的坐标轴
-        Dim Vertex As Point = New Point(Location.X, Location.Y - size.Height)
-        'Call Gr.Gr_Device.DrawLine(LinePen, Location, Vertex) 'Y
-        Call Gr.Gr_Device.DrawString(Mid(Min.ToString, 1, 5), font:=TagFont, brush:=Brushes.Black, point:=New Point(Location.X - YValueOffset, Location.Y - AixsSize.Height / 2))
-        Call Gr.Gr_Device.DrawString(Mid(Max.ToString, 1, 5), TagFont, Brushes.Black, New Point(Vertex.X - YValueOffset, Vertex.Y - AixsSize.Height / 2))
         'Y箭头向上
         'Call Gr.Gr_Device.DrawLine(LinePen, Vertex, New Point(Vertex.X - 5, Vertex.Y + 20))
         'Vertex = New Point(Location.X + size.Width, Location.Y)
@@ -87,44 +105,42 @@ Public Module GCSkew
         'X箭头向右
         'Call Gr.Gr_Device.DrawLine(LinePen, Vertex, New Point(Vertex.X - 20, Vertex.Y - 5))
 
-        Dim X_ScaleFactor As Double = size.Width / ChunkBuffer.Count
+        Dim X_ScaleFactor As Double = size.Width / buf.Count
         Dim Y_ScaleFactor As Double = size.Height / (Max - Min)
-        Dim X As Double = Location.X, Y As Integer
-        Dim avg = ChunkBuffer.Average
-        Dim Y_avg As Double = Location.Y - (avg - Min) * Y_ScaleFactor
-
+        Dim X As Double = location.X, Y As Integer
+        Dim avg As Double = buf.Average
+        Dim Y_avg As Double = location.Y - (avg - Min) * Y_ScaleFactor
         Dim dddd As Double = size.Height / 10
 
-        Y = Location.Y - size.Height
+        Y = location.Y - size.Height
 
         For i As Integer = 0 To 9
             'Call Gr.Gr_Device.DrawLine(LinePen, New Point(Location.X, Y), New Point(Location.X + size.Width, Y))
             Y += dddd
         Next
 
-        Dim prePt As Point = New Point(X, Location.Y - (ChunkBuffer.First - Min) * Y_ScaleFactor)
+        Dim prePt As Point = New Point(X, location.Y - (buf.First - Min) * Y_ScaleFactor)
 
         LinePen = New Pen(PlotBrush, 2)
 
-        If ShowAverageLine Then
-            '绘制中间的平均线
-            Call Gr.Gr_Device.DrawLine(New Pen(Brushes.LightGray, 3), New Point(Location.X, Y_avg), New Point(Location.X + size.Width, Y_avg))
-            Call Gr.Gr_Device.DrawString(Mid(avg, 1, 5), TagFont, Brushes.Black, New Point(Location.X - YValueOffset, Y_avg - "0".MeasureString(TagFont).Height / 2))
+        If ShowAverageLine Then  ' 绘制中间的平均线
+            Call Gr.Gr_Device.DrawLine(New Pen(Brushes.LightGray, 3), New Point(location.X, Y_avg), New Point(location.X + size.Width, Y_avg))
+            Call Gr.Gr_Device.DrawString(Mid(avg, 1, 5), tagFont, Brushes.Black, New Point(location.X - YValueOffset, Y_avg - "0".MeasureString(tagFont).Height / 2))
         End If
 
-        For i As Integer = 0 To ChunkBuffer.Count - 1
-            Dim n = ChunkBuffer(i)
-            Y = Location.Y - (n - Min) * Y_ScaleFactor
-            Dim Region As Rectangle
+        Dim Region As Rectangle
+
+        For Each n As Double In buf
+            Y = location.Y - (n - Min) * Y_ScaleFactor
 
             If Y > Y_avg Then '小于平均值，则Y颠倒过来
-                Dim pt = New Point(X, Y_avg)
+                Dim pt As New Point(X, Y_avg)
                 Region = New Rectangle(pt, New Size(X_ScaleFactor, Y - Y_avg))
                 pt = New Point(X + 0.5 * X_ScaleFactor, Region.Bottom)
                 Call Gr.Gr_Device.DrawLine(LinePen, prePt, pt)
                 prePt = pt
             Else
-                Dim pt = New Point(X, Y)
+                Dim pt As New Point(X, Y)
                 Region = New Rectangle(pt, New Size(X_ScaleFactor, Y_avg - Y))
                 pt = New Point(X + 0.5 * X_ScaleFactor, Region.Top)
                 Call Gr.Gr_Device.DrawLine(LinePen, prePt, pt)
@@ -154,9 +170,9 @@ Public Module GCSkew
         ' 绘制gc偏移曲线
         Dim Skew As Double() = NucleotideModels.GCSkew(nt, WindowSize, Steps, True)
         Return InvokeDrawingCurve(source,
-                                  ChunkBuffer:=Skew,
-                                  Location:=Location,
+                                  buf:=Skew,
+                                  location:=Location,
                                   size:=New Size(Width, PlotsHeight),
-                                  Loci:=__getLoci(nt))
+                                  loci:=__getLoci(nt))
     End Function
 End Module

@@ -87,6 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorMgr.vb" />
+    <Compile Include="CurvesChart\CurvesModel.vb" />
+    <Compile Include="CurvesChart\Histogram.vb" />
+    <Compile Include="CurvesChart\Line.vb" />
     <Compile Include="Extensions.vb" />
     <Compile Include="GCSkew.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
