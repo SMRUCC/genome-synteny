@@ -21,13 +21,15 @@ Public MustInherit Class CurvesModel
     Protected PlotBrush As SolidBrush = Brushes.DarkGreen
 
     Public Function Draw(source As Image, buf As Double(), location As Point, size As Size) As Image
+        Dim sample As DataSample(Of Double) = DataSampleAPI.DoubleSample(buf)
+
         Using g As IGraphics = source.GdiFromImage
-            Call Draw(g, buf, location, size, New DoubleRange(buf.Min, buf.Max))
+            Call Draw(g, sample, location, size)
             Return DirectCast(g, GDIPlusDeviceHandle).ImageResource
         End Using
     End Function
 
-    Protected MustOverride Sub Draw(ByRef source As IGraphics, buf As Double(), location As Point, size As Size, yRange As DoubleRange)
+    Protected MustOverride Sub Draw(ByRef source As IGraphics, data As DataSample(Of Double), location As Point, size As Size)
 
     Public Shared Function GraphicsDevice(type As GraphicTypes) As CurvesModel
         Select Case type

@@ -1,11 +1,12 @@
 ﻿Imports System.Drawing
 Imports LANS.SystemsBiology.ComponentModel.Loci
+Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.ComponentModel.Ranges
 Imports Microsoft.VisualBasic.Imaging
 
 Public Class Histogram : Inherits CurvesModel
 
-    Protected Overrides Sub Draw(ByRef g As IGraphics, buf() As Double, location As Point, size As Size, range As DoubleRange)
+    Protected Overrides Sub Draw(ByRef g As IGraphics, data As DataSample(Of Double), location As Point, size As Size)
 
         'Y箭头向上
         'Call Gr.Gr_Device.DrawLine(LinePen, Vertex, New Point(Vertex.X - 5, Vertex.Y + 20))
@@ -19,23 +20,23 @@ Public Class Histogram : Inherits CurvesModel
         Dim LinePen As New Pen(color:=Color.FromArgb(30, Color.LightGray), width:=0.3)
         Dim tagFont As New Font(FontFace.Ubuntu, 12)
 
-        Call DrawAixs(g, location, size, tagFont, range.Min, range.Max)
+        Call DrawAixs(g, location, size, tagFont, Range.Min, Range.Max)
 
         Dim X_ScaleFactor As Double = size.Width / buf.Count
-        Dim Y_ScaleFactor As Double = size.Height / (range.Max - range.Min)
+        Dim Y_ScaleFactor As Double = size.Height / (Range.Max - Range.Min)
         Dim X As Double = location.X, Y As Integer
         Dim avg As Double = buf.Average
-        Dim Y_avg As Double = location.Y - (avg - range.Min) * Y_ScaleFactor
+        Dim Y_avg As Double = location.Y - (avg - Range.Min) * Y_ScaleFactor
         Dim dddd As Double = size.Height / 10
 
         Y = location.Y - size.Height
 
         For i As Integer = 0 To 9
-            'Call Gr.Gr_Device.DrawLine(LinePen, New Point(Location.X, Y), New Point(Location.X + size.Width, Y))
+            Call g.DrawLine(LinePen, New Point(location.X, Y), New Point(location.X + size.Width, Y))
             Y += dddd
         Next
 
-        Dim prePt As Point = New Point(X, location.Y - (buf.First - range.Min) * Y_ScaleFactor)
+        Dim prePt As Point = New Point(X, location.Y - (buf.First - Range.Min) * Y_ScaleFactor)
 
         LinePen = New Pen(PlotBrush, 2)
 
@@ -47,7 +48,7 @@ Public Class Histogram : Inherits CurvesModel
         Dim Region As Rectangle
 
         For Each n As Double In buf
-            Y = location.Y - (n - range.Min) * Y_ScaleFactor
+            Y = location.Y - (n - Range.Min) * Y_ScaleFactor
 
             If Y > Y_avg Then '小于平均值，则Y颠倒过来
                 Dim pt As New Point(X, Y_avg)

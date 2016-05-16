@@ -1,11 +1,12 @@
 ﻿Imports System.Drawing
 Imports LANS.SystemsBiology.ComponentModel.Loci
+Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.ComponentModel.Ranges
 Imports Microsoft.VisualBasic.Imaging
 
 Public Class Line : Inherits CurvesModel
 
-    Protected Overrides Sub Draw(ByRef g As IGraphics, buf() As Double, location As Point, size As Size, range As DoubleRange)
+    Protected Overrides Sub Draw(ByRef g As IGraphics, data As DataSample(Of Double), location As Point, size As Size, range As DoubleRange)
         Dim LinePen As New Pen(color:=Color.FromArgb(30, Color.LightGray), width:=0.3)
         Dim tagFont As New Font(FontFace.Ubuntu, 12)
 
