@@ -6,7 +6,26 @@ Imports Microsoft.VisualBasic.Imaging
 
 Public Class Histogram : Inherits CurvesModel
 
+    Public Property TokenWidth As Integer = 6
+    Public Property Lines As Integer = 20
+
+    Sub New()
+        MyBase.PlotBrush = New SolidBrush(Color.DarkCyan)
+    End Sub
+
+    Private Shared Function __average(x As Double()) As Double
+        Return x.Average
+    End Function
+
+    Private Function __trimData(data As DataSample(Of Double), size As Size) As DataSample(Of Double)
+        Dim n As Integer = size.Width / TokenWidth
+        n = data.Length / n
+        data = DataSampleAPI.DoubleSample(data.Split(n).Select(AddressOf __average))
+        Return data
+    End Function
+
     Protected Overrides Sub Draw(ByRef g As IGraphics, data As DataSample(Of Double), location As Point, size As Size)
+        data = __trimData(data, size)
 
         'Y箭头向上
         'Call Gr.Gr_Device.DrawLine(LinePen, Vertex, New Point(Vertex.X - 5, Vertex.Y + 20))
@@ -17,7 +36,7 @@ Public Class Histogram : Inherits CurvesModel
         'X箭头向右
         'Call Gr.Gr_Device.DrawLine(LinePen, Vertex, New Point(Vertex.X - 20, Vertex.Y - 5))
 
-        Dim LinePen As New Pen(color:=Color.FromArgb(30, Color.LightGray), width:=0.3)
+        Dim LinePen As New Pen(color:=Color.FromArgb(90, Color.LightGray), width:=0.3)
         Dim tagFont As New Font(FontFace.Ubuntu, 12)
 
         Call DrawAixs(g, location, size, tagFont, data.Min, data.Max)
@@ -26,11 +45,11 @@ Public Class Histogram : Inherits CurvesModel
         Dim Y_ScaleFactor As Double = size.Height / (data.Max - data.Min)
         Dim X As Double = location.X, Y As Integer
         Dim Y_avg As Double = location.Y - (data.Average - data.Min) * Y_ScaleFactor
-        Dim dddd As Double = size.Height / 10
+        Dim dddd As Double = size.Height / Lines
 
         Y = location.Y - size.Height
 
-        For i As Integer = 0 To 9
+        For i As Integer = 0 To Lines - 1
             Call g.DrawLine(LinePen, New Point(location.X, Y), New Point(location.X + size.Width, Y))
             Y += dddd
         Next
@@ -53,13 +72,11 @@ Public Class Histogram : Inherits CurvesModel
                 Dim pt As New Point(X, Y_avg)
                 Region = New Rectangle(pt, New Size(X_ScaleFactor, Y - Y_avg))
                 pt = New Point(X + 0.5 * X_ScaleFactor, Region.Bottom)
-                Call g.DrawLine(LinePen, prePt, pt)
                 prePt = pt
             Else
                 Dim pt As New Point(X, Y)
                 Region = New Rectangle(pt, New Size(X_ScaleFactor, Y_avg - Y))
                 pt = New Point(X + 0.5 * X_ScaleFactor, Region.Top)
-                Call g.DrawLine(LinePen, prePt, pt)
                 prePt = pt
             End If
 
