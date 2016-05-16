@@ -1,6 +1,8 @@
 ﻿Imports System.Drawing
 Imports LANS.SystemsBiology.ComponentModel.Loci
+Imports Microsoft.VisualBasic.ComponentModel
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
+Imports Microsoft.VisualBasic.ComponentModel.Ranges
 Imports Microsoft.VisualBasic.Imaging
 
 Public MustInherit Class CurvesModel
@@ -16,15 +18,31 @@ Public MustInherit Class CurvesModel
     <DataFrameColumn("average.shows")>
     Public Property ShowAverageLine As Boolean = True
 
-    Dim PlotBrush As SolidBrush = Brushes.DarkGreen
+    Protected PlotBrush As SolidBrush = Brushes.DarkGreen
 
-    Public Function Draw(source As Image, buf As Double(), location As Point, size As Size, loci As Location) As Image
+    Public Function Draw(source As Image, buf As Double(), location As Point, size As Size) As Image
         Using g As IGraphics = source.GdiFromImage
-            Call Draw(g, buf, location, size, loci)
+            Call Draw(g, buf, location, size, New DoubleRange(buf.Min, buf.Max))
         End Using
 
         Return source
     End Function
 
-    Protected MustOverride Sub Draw(source As IGraphics, buf As Double(), location As Point, size As Size, loci As Location)
+    Protected MustOverride Sub Draw(ByRef source As IGraphics, buf As Double(), location As Point, size As Size, yRange As DoubleRange)
+
+    Public Shared Function GraphicsDevice(type As GraphicTypes) As CurvesModel
+        Select Case type
+            Case GraphicTypes.Curves
+                Return New Line
+            Case GraphicTypes.Histogram
+                Return New Histogram
+            Case Else
+                Return New Line
+        End Select
+    End Function
 End Class
+
+Public Enum GraphicTypes
+    Curves
+    Histogram
+End Enum
