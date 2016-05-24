@@ -3,6 +3,7 @@ Imports System.Runtime.CompilerServices
 Imports LANS.SystemsBiology.Assembly.NCBI
 Imports LANS.SystemsBiology.ComponentModel
 Imports Microsoft.VisualBasic
+Imports Microsoft.VisualBasic.ComponentModel
 Imports Microsoft.VisualBasic.ComponentModel.DataStructures
 Imports Microsoft.VisualBasic.Imaging
 Imports Microsoft.VisualBasic.Language

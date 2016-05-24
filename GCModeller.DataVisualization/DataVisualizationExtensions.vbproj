@@ -86,6 +86,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorProfiles.vb" />
     <Compile Include="ValueParser.vb" />
     <Compile Include="ColorMgr.vb" />
     <Compile Include="CurvesChart\CurvesModel.vb" />
