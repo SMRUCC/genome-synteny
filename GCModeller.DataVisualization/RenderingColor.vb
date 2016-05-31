@@ -139,20 +139,23 @@ Public Module RenderingColor
     ''' <returns></returns>
     ''' 
     <Extension>
-    Public Function GenerateColorProfiles(categories As String(), Optional removeUsed As Boolean = True) As Dictionary(Of String, Color)
-        Dim Colors As Dictionary(Of String, Color) = New Dictionary(Of String, Color)
+    Public Function GenerateColorProfiles(categories As IEnumerable(Of String), Optional removeUsed As Boolean = True) As Dictionary(Of String, Color)
+        Dim Colors As New Dictionary(Of String, Color)
         Dim Rs As New List(Of Integer)(255.Sequence.Randomize)
         Dim Gs As New List(Of Integer)(255.Sequence.Randomize)
         Dim Bs As New List(Of Integer)(255.Sequence.Randomize)
+        Dim R, G, B As Integer
 
-        For Each Color As String In From s As String In categories Where Not String.IsNullOrEmpty(s) Select s
-            Dim R, G, B As Integer
+        For Each cl As String In From s As String
+                                 In categories
+                                 Where Not String.IsNullOrEmpty(s)
+                                 Select s
 
             Call VBMath.Randomize() : R = RandomDouble() * (Rs.Count - 1)
             Call VBMath.Randomize() : G = RandomDouble() * (Gs.Count - 1)
             Call VBMath.Randomize() : B = RandomDouble() * (Bs.Count - 1)
 
-            Call Colors.Add(Color, System.Drawing.Color.FromArgb(Rs(R), Gs(G), Bs(B)))
+            Call Colors.Add(cl, Color.FromArgb(Rs(R), Gs(G), Bs(B)))
 
             If removeUsed Then
                 Call Rs.RemoveAt(R)
