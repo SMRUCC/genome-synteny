@@ -23,8 +23,8 @@ Public Module Extensions
         Dim top As Integer = ref.Y - 100
         Dim left As Integer = ref.X
         Dim legendHeight As Integer = 20
-        Dim FontHeight As Integer = gdi.MeasureString("COG", legendFont).Height
-        Dim d As Integer = (legendHeight - FontHeight) / 2
+        Dim FontHeight As Single = gdi.MeasureString("COG", legendFont).Height
+        Dim d As Single = (legendHeight - FontHeight) / 2
         Dim colors As List(Of KeyValuePair(Of String, Brush)) =
             LinqAPI.MakeList(Of KeyValuePair(Of String, Brush)) <=
                 From x As KeyValuePair(Of String, Brush)

@@ -21,7 +21,7 @@ Public Module GCSkew
     <DataFrameColumn("average.shows")>
     Public Property ShowAverageLine As Boolean = True
 
-    Dim PlotBrush As SolidBrush = Brushes.DarkGreen
+    Dim PlotBrush As SolidBrush = DirectCast(Brushes.DarkGreen, SolidBrush)
 
     <ExportAPI("Plot.Set.Color")>
     Public Function SetPlotBrush(r As Integer, g As Integer, b As Integer, Optional alpha As Integer = 220) As Color
@@ -70,7 +70,7 @@ Public Module GCSkew
     ''' <param name="location"></param>
     ''' <param name="size"></param>
     ''' <param name="tagFont"></param>
-    Public Sub DrawAixs(g As GDIPlusDeviceHandle, location As Point, size As Size, tagFont As Font, min As Double, max As Double)
+    Public Sub DrawAixs(g As IGraphics, location As Point, size As Size, tagFont As Font, min As Double, max As Double)
         Dim aixsSize As Size = "0".MeasureString(tagFont)
         Dim vertex As Point = New Point(location.X, location.Y - size.Height)
         Dim tmpLoci As New Point(location.X - YValueOffset,
