@@ -11,6 +11,8 @@ Imports Microsoft.VisualBasic
 Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.Imaging
 Imports LANS.SystemsBiology.Assembly.NCBI.GenBank.TabularFormat.ComponentModels
+Imports Microsoft.VisualBasic.FileIO
+Imports Microsoft.VisualBasic.Serialization.JSON
 
 Public Module ModelAPI
 
@@ -77,7 +79,7 @@ Public Module ModelAPI
     ''' <param name="style">The link line style.(假若设置了这个参数的话，就会将模型里面的数据给覆盖掉)</param>
     ''' <returns></returns>
     Public Function GetDrawsModel(path As String, Optional style As LineStyles = LineStyles.NotSpecific) As DrawingModel
-        Dim model As DeviceModel = Serialization.LoadJsonFile(Of DeviceModel)(path)
+        Dim model As DeviceModel = JsonContract.LoadJsonFile(Of DeviceModel)(path)
         Dim DIR As New Directory(path.ParentPath)
         Dim bbhMeta As Analysis.BestHit =
             DIR.GetFullPath(model.Meta).LoadXml(Of Analysis.BestHit)

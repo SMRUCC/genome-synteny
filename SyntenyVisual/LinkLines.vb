@@ -1,6 +1,7 @@
 ﻿Imports System.Drawing
 Imports Microsoft.VisualBasic.Imaging
 Imports Microsoft.VisualBasic.Serialization
+Imports Microsoft.VisualBasic.Serialization.JSON
 
 ''' <summary>
 ''' The drawing model abstract of the ortholog relationship.(直系同源的绘图模型)
